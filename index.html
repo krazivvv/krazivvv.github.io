@@ -3,142 +3,202 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#121722">
   <title>Jaber Ziv Pamittan | Portfolio</title>
   <meta name="description" content="Computer Science graduate looking for entry-level IT support and software roles.">
 
   <!-- Fonts: if you're offline, the page falls back to your system fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=JetBrains+Mono:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Lets the CSS know JavaScript is running, so scroll animations only happen when they can work -->
+  <script>document.documentElement.classList.add('js');</script>
 
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header class="site-header wrap">
-    <a class="site-name" href="#top">Jaber Ziv Pamittan</a>
-    <nav aria-label="Main">
-      <a href="#about">About</a>
-      <a href="#projects">Projects</a>
-      <a href="#skills">Skills</a>
-      <a href="#contact">Contact</a>
-    </nav>
+  <header class="site-header">
+    <div class="wrap bar">
+      <a class="site-name" href="#top">Jaber Ziv Pamittan</a>
+      <nav aria-label="Main">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
   </header>
 
   <main id="top">
 
     <!-- Intro -->
     <section class="hero wrap">
-      <h1>Jaber Ziv Pamittan</h1>
-      <p class="lead">
-        Computer Science graduate looking for entry-level IT support and software roles.
-        I'm building small tools in Python, Java, and C# and publishing them on GitHub.
-      </p>
-      <p class="actions">
-        <a class="button" href="#projects">See my projects</a>
-        <a class="button button-quiet" href="https://github.com/krazivvv">GitHub profile</a>
-      </p>
+      <div class="hero-text">
+        <p class="status rise" style="--d: 0s"><span class="dot"></span>Open to entry-level roles</p>
+        <h1 class="rise" style="--d: 0.08s">Jaber Ziv Pamittan</h1>
+        <p class="lead rise" style="--d: 0.16s">
+          Computer Science graduate looking for entry-level IT support and software roles.
+          I'm building small tools in Python, Java, and C# and publishing them on GitHub.
+        </p>
+        <p class="actions rise" style="--d: 0.24s">
+          <a class="button" href="#projects">See my projects</a>
+          <a class="button button-quiet" href="https://github.com/krazivvv">GitHub profile</a>
+        </p>
+      </div>
+
+      <!-- Terminal: types out a real run of the File Organizer (the text is also here for browsers without JavaScript) -->
+      <div class="terminal rise" id="term" style="--d: 0.32s" role="img" aria-label="Animated terminal showing the File Organizer sorting six files into folders">
+        <div class="terminal-bar" aria-hidden="true">
+          <span></span><span></span><span></span>
+          <em class="terminal-title">file-organizer</em>
+        </div>
+        <div class="terminal-body" aria-hidden="true">
+          <div class="line"><span class="prompt">$</span> <span class="typed">python file_organizer.py demo --apply</span><span class="cursor"></span></div>
+          <div class="out first"><span class="k">Moved:</span>   backup.zip  <span class="arrow">-&gt;</span>  Archives/backup.zip</div>
+          <div class="out"><span class="k">Moved:</span>   notes.txt  <span class="arrow">-&gt;</span>  Documents/notes.txt</div>
+          <div class="out"><span class="k">Moved:</span>   photo.jpg  <span class="arrow">-&gt;</span>  Images/photo.jpg</div>
+          <div class="out"><span class="k">Moved:</span>   report.pdf  <span class="arrow">-&gt;</span>  Documents/report.pdf</div>
+          <div class="out"><span class="k">Moved:</span>   script.py  <span class="arrow">-&gt;</span>  Code/script.py</div>
+          <div class="out"><span class="k">Moved:</span>   song.mp3  <span class="arrow">-&gt;</span>  Audio/song.mp3</div>
+          <div class="out done">Done. 6 file(s) organized.</div>
+        </div>
+      </div>
     </section>
 
     <!-- About -->
-    <section id="about" class="section wrap">
+    <section id="about" class="section wrap split reveal">
       <h2>About</h2>
-      <p>
-        I recently graduated with a Bachelor's degree in Computer Science. I'm looking for an
-        entry-level role in IT support or software, where I can keep learning while helping
-        people solve real problems.
-      </p>
-      <p>
-        My projects so far are small tools that I built from scratch, documented, and published
-        on GitHub. I like turning a messy task into something that works the same way every time.
-      </p>
+      <div>
+        <p>
+          I recently graduated with a Bachelor's degree in Computer Science. I'm looking for an
+          entry-level role in IT support or software, where I can keep learning while helping
+          people solve real problems.
+        </p>
+        <p>
+          My projects so far are small tools that I built from scratch, documented, and published
+          on GitHub. I like turning a messy task into something that works the same way every time.
+        </p>
+      </div>
     </section>
 
     <!-- Projects -->
-    <section id="projects" class="section wrap">
+    <section id="projects" class="section wrap reveal">
       <h2>Projects</h2>
 
-      <article class="project">
-        <h3>File Organizer</h3>
-        <p>
-          A command-line tool that sorts a messy folder into subfolders by file type.
-          It shows a preview before moving anything, and it renames duplicates instead of overwriting files.
-        </p>
+      <div class="project-list">
 
-  <img class="screenshot" src="images/file-organizer.png" alt="Terminal showing the File Organizer moving six files into Archives, Documents, Images, Code, and Audio folders" loading="lazy">
+        <article class="project">
+          <h3>File Organizer</h3>
+          <p>
+            A command-line tool that sorts a messy folder into subfolders by file type.
+            It shows a preview before moving anything, and it renames duplicates instead of overwriting files.
+          </p>
 
-        <ul class="tags" aria-label="Technologies used">
-          <li>Python</li>
-          <li>pathlib</li>
-          <li>argparse</li>
-          <li>shutil</li>
-        </ul>
+          <figure class="shot">
+            <img src="images/file-organizer.png" alt="Terminal showing the File Organizer moving six files into Archives, Documents, Images, Code, and Audio folders" loading="lazy">
+          </figure>
 
-        <p><a href="https://github.com/krazivvv/file-organizer">View the code on GitHub</a></p>
-      </article>
+          <ul class="tags" aria-label="Technologies used">
+            <li>Python</li>
+            <li>pathlib</li>
+            <li>argparse</li>
+            <li>shutil</li>
+          </ul>
 
-      <article class="project">
-        <h3>Grade Tracker</h3>
-        <p>
-          A Java console app for tracking student grades. It calculates averages and shows reports,
-          checks every input, and saves data to a file so it is still there the next time you run it.
-        </p>
+          <p class="project-link"><a href="https://github.com/krazivvv/file-organizer">View the code on GitHub</a></p>
+        </article>
 
-  <img class="screenshot" src="images/grade-tracker.png" alt="Terminal showing a student report from the Grade Tracker with subjects, scores, and an average" loading="lazy">
+        <article class="project">
+          <h3>Grade Tracker</h3>
+          <p>
+            A Java console app for tracking student grades. It calculates averages and shows reports,
+            checks every input, and saves data to a file so it is still there the next time you run it.
+          </p>
 
-        <ul class="tags" aria-label="Technologies used">
-          <li>Java</li>
-          <li>File I/O</li>
-          <li>Collections</li>
-        </ul>
+          <figure class="shot">
+            <img src="images/grade-tracker.png" alt="Terminal showing a student report from the Grade Tracker with subjects, scores, and an average" loading="lazy">
+          </figure>
 
-        <p><a href="https://github.com/krazivvv/grade-tracker">View the code on GitHub</a></p>
-      </article>
+          <ul class="tags" aria-label="Technologies used">
+            <li>Java</li>
+            <li>File I/O</li>
+            <li>Collections</li>
+          </ul>
 
-      <article class="project">
-        <h3>Inventory Manager</h3>
-        <p>
-          A C# console app for tracking stock. It totals the value of your inventory, flags items that
-          are running low, checks every input, and saves data to a file so it is still there the next time you run it.
-        </p>
+          <p class="project-link"><a href="https://github.com/krazivvv/grade-tracker">View the code on GitHub</a></p>
+        </article>
 
-  <img class="screenshot" src="images/inventory-manager.png" alt="Terminal showing the Inventory Manager table with quantities, prices, values, and a low stock flag" loading="lazy">
+        <article class="project">
+          <h3>Inventory Manager</h3>
+          <p>
+            A C# console app for tracking stock. It totals the value of your inventory, flags items that
+            are running low, checks every input, and saves data to a file so it is still there the next time you run it.
+          </p>
 
-        <ul class="tags" aria-label="Technologies used">
-          <li>C#</li>
-          <li>.NET</li>
-          <li>LINQ</li>
-          <li>File I/O</li>
-        </ul>
+          <figure class="shot">
+            <img src="images/inventory-manager.png" alt="Terminal showing the Inventory Manager table with quantities, prices, values, and a low stock flag" loading="lazy">
+          </figure>
 
-        <p><a href="https://github.com/krazivvv/inventory-manager">View the code on GitHub</a></p>
-      </article>
+          <ul class="tags" aria-label="Technologies used">
+            <li>C#</li>
+            <li>.NET</li>
+            <li>LINQ</li>
+            <li>File I/O</li>
+          </ul>
 
-      <!-- Add your next project here by copying an <article> above -->
+          <p class="project-link"><a href="https://github.com/krazivvv/inventory-manager">View the code on GitHub</a></p>
+        </article>
+
+        <!-- Add your next project by copying one of the project articles above -->
+      </div>
     </section>
 
     <!-- Skills -->
-    <section id="skills" class="section wrap">
+    <section id="skills" class="section wrap split reveal">
       <h2>Skills</h2>
       <dl class="skills">
         <dt>Languages</dt>
-        <dd>Java, Python, C#</dd>
+        <dd>
+          <ul class="chips">
+            <li>Java</li>
+            <li>Python</li>
+            <li>C#</li>
+          </ul>
+        </dd>
         <dt>Web</dt>
-        <dd>HTML, CSS</dd>
+        <dd>
+          <ul class="chips">
+            <li>HTML</li>
+            <li>CSS</li>
+          </ul>
+        </dd>
         <dt>Tools</dt>
-        <dd>Git, GitHub, VS Code</dd>
+        <dd>
+          <ul class="chips">
+            <li>Git</li>
+            <li>GitHub</li>
+            <li>VS Code</li>
+          </ul>
+        </dd>
       </dl>
     </section>
 
     <!-- Contact -->
-    <section id="contact" class="section wrap">
+    <section id="contact" class="section wrap split reveal">
       <h2>Contact</h2>
-      <p>
-        I'm open to entry-level IT support and software roles.
-        The fastest way to reach me is by email.
-      </p>
-      <p><a href="mailto:jaberzivpamittan26@gmail.com">jaberzivpamittan26@gmail.com</a></p>
-      <p><a href="resume.pdf">Download my resume (PDF)</a></p>
+      <div>
+        <p>
+          I'm open to entry-level IT support and software roles.
+          The fastest way to reach me is by email.
+        </p>
+        <p class="contact-email"><a href="mailto:jaberzivpamittan26@gmail.com">jaberzivpamittan26@gmail.com</a></p>
+        <p class="actions">
+          <a class="button" href="resume.pdf">Download my resume (PDF)</a>
+          <a class="button button-quiet" href="https://github.com/krazivvv">GitHub profile</a>
+        </p>
+      </div>
     </section>
 
   </main>
@@ -146,6 +206,82 @@
   <footer class="site-footer wrap">
     <p>&copy; 2026 Jaber Ziv Pamittan</p>
   </footer>
+
+  <script>
+    (function () {
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var revealEls = document.querySelectorAll('.reveal');
+
+      function showAll() {
+        revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+      }
+
+      try {
+        /* 1. Terminal: type the command, then print the output lines one by one */
+        var term = document.getElementById('term');
+        if (term && !reduceMotion) {
+          var typed = term.querySelector('.typed');
+          var outputLines = term.querySelectorAll('.out');
+          var command = typed.textContent.trim();
+
+          typed.textContent = '';
+          outputLines.forEach(function (line) { line.classList.add('pending'); });
+
+          var i = 0;
+          var typeNext = function () {
+            if (i < command.length) {
+              typed.textContent += command.charAt(i);
+              i += 1;
+              setTimeout(typeNext, 35 + Math.random() * 45);
+            } else {
+              setTimeout(function () { showLine(0); }, 450);
+            }
+          };
+          var showLine = function (n) {
+            if (n < outputLines.length) {
+              outputLines[n].classList.remove('pending');
+              setTimeout(function () { showLine(n + 1); }, 230);
+            }
+          };
+          setTimeout(typeNext, 900);
+        }
+
+        /* 2. Sections fade in as you scroll to them */
+        if ('IntersectionObserver' in window && !reduceMotion) {
+          var revealObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                revealObserver.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0.1 });
+          revealEls.forEach(function (el) { revealObserver.observe(el); });
+        } else {
+          showAll();
+        }
+
+        /* 3. Highlight the menu link for the section you're reading */
+        if ('IntersectionObserver' in window) {
+          var navLinks = document.querySelectorAll('.site-header nav a');
+          var navObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                navLinks.forEach(function (link) {
+                  link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+                });
+              }
+            });
+          }, { rootMargin: '-40% 0px -55% 0px' });
+          document.querySelectorAll('main section[id]').forEach(function (section) {
+            navObserver.observe(section);
+          });
+        }
+      } catch (error) {
+        showAll();   /* if anything goes wrong, never leave content hidden */
+      }
+    })();
+  </script>
 
 </body>
 </html>

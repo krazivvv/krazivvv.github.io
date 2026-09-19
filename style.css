@@ -2,16 +2,20 @@
 :root {
   --bg: #121722;
   --surface: #1a2130;
+  --terminal: #0b0f16;
   --line: #2a3245;
   --text: #ebe9e4;
   --muted: #a3abbb;
   --accent: #8fb0ff;
+  --accent-2: #ffb86b;
+  --good: #7ee2a8;
 
-  --radius: 6px;
+  --radius: 12px;
+  --radius-sm: 8px;
 
   --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
-  --font-mono: ui-monospace, "Cascadia Code", Consolas, monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
 }
 
 /* ---------- Base ---------- */
@@ -23,27 +27,30 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 1.5rem;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+  scroll-padding-top: 5rem;
 }
 
 body {
   margin: 0;
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(45rem 28rem at 85% -4%, rgba(143, 176, 255, 0.16), transparent 70%),
+    radial-gradient(34rem 22rem at 0% 6%, rgba(255, 184, 107, 0.07), transparent 70%);
+  background-repeat: no-repeat;
   color: var(--text);
   font-family: var(--font-body);
   font-size: 1.0625rem;
   line-height: 1.65;
 }
 
+::selection {
+  background: rgba(143, 176, 255, 0.35);
+}
+
 a {
   color: var(--accent);
   text-underline-offset: 0.2em;
+  transition: color 0.2s ease;
 }
 
 a:hover {
@@ -63,23 +70,48 @@ p {
 
 /* ---------- Layout ---------- */
 .wrap {
-  width: min(100% - 3rem, 44rem);
+  width: min(100% - 3rem, 62rem);
   margin-inline: auto;
 }
 
 .section {
-  padding-block: 3.5rem;
+  padding-block: 4.5rem;
   border-top: 1px solid var(--line);
+}
+
+/* Heading on the left, content on the right (on wide screens) */
+.split {
+  display: grid;
+  gap: 1.5rem 3rem;
+}
+
+@media (min-width: 52rem) {
+  .split {
+    grid-template-columns: 12rem 1fr;
+  }
+}
+
+.split h2 {
+  margin: 0;
 }
 
 /* ---------- Header ---------- */
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(18, 23, 34, 0.78);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.bar {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 0.75rem 2rem;
-  padding-block: 1.5rem;
+  gap: 0.5rem 2rem;
+  padding-block: 1rem;
 }
 
 .site-name {
@@ -95,33 +127,107 @@ p {
 }
 
 .site-header nav a {
+  position: relative;
+  padding-block: 0.25rem;
   color: var(--muted);
   text-decoration: none;
 }
 
-.site-header nav a:hover {
+.site-header nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.site-header nav a:hover,
+.site-header nav a.active {
   color: var(--text);
+}
+
+.site-header nav a:hover::after,
+.site-header nav a.active::after {
+  transform: scaleX(1);
 }
 
 /* ---------- Hero ---------- */
 .hero {
-  padding-block: 4.5rem 4rem;
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+  padding-block: 4rem 5rem;
+}
+
+@media (min-width: 60rem) {
+  .hero {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    padding-block: 5rem 6rem;
+  }
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 1.5rem;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(26, 33, 48, 0.6);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.dot {
+  position: relative;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--good);
+}
+
+.dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--good);
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  80%,
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
 }
 
 h1 {
   margin: 0 0 1.5rem;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(2.75rem, 9vw, 5.5rem);
-  line-height: 1;
+  font-size: clamp(2.6rem, 7vw, 4.5rem);
+  line-height: 1.02;
   letter-spacing: -0.03em;
 }
 
 .lead {
-  font-size: 1.25rem;
-  line-height: 1.55;
-  color: var(--muted);
   margin-bottom: 2rem;
+  color: var(--muted);
+  font-size: 1.2rem;
+  line-height: 1.55;
 }
 
 .actions {
@@ -131,18 +237,38 @@ h1 {
   margin: 0;
 }
 
+/* Hero elements slide up one after another when the page loads */
+.rise {
+  animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--d, 0s);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Buttons ---------- */
 .button {
   display: inline-block;
   padding: 0.65rem 1.25rem;
   border: 1px solid var(--accent);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   background: var(--accent);
   color: var(--bg);
   font-weight: 600;
   text-decoration: none;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .button:hover {
+  transform: translateY(-2px);
   background: var(--text);
   border-color: var(--text);
   color: var(--bg);
@@ -159,9 +285,113 @@ h1 {
   color: var(--text);
 }
 
+/* ---------- Terminal ---------- */
+.terminal {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--terminal);
+  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(143, 176, 255, 0.05);
+  overflow: hidden;
+}
+
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.terminal-bar span {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+}
+
+.terminal-bar span:nth-child(1) { background: #ff6b6b; }
+.terminal-bar span:nth-child(2) { background: #ffd166; }
+.terminal-bar span:nth-child(3) { background: var(--good); }
+
+.terminal-title {
+  margin-left: 0.5rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-style: normal;
+}
+
+.terminal-body {
+  min-height: 15.5rem;
+  padding: 1.25rem 1.25rem 1.5rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+.line,
+.out {
+  white-space: pre;
+}
+
+.out.first {
+  margin-top: 0.6rem;
+}
+
+.out.done {
+  margin-top: 0.6rem;
+  color: var(--good);
+}
+
+.out.pending {
+  visibility: hidden;   /* keeps the space, so the box doesn't jump while typing */
+}
+
+.prompt {
+  color: var(--accent-2);
+}
+
+.k {
+  color: var(--accent);
+}
+
+.arrow {
+  color: var(--muted);
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.05em;
+  margin-left: 2px;
+  background: var(--accent-2);
+  vertical-align: text-bottom;
+  animation: blink 1.1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ---------- Scroll reveal (only when JavaScript is running) ---------- */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
 /* ---------- Headings ---------- */
 h2 {
-  margin: 0 0 1.75rem;
+  margin: 0 0 2rem;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.75rem;
@@ -172,24 +402,55 @@ h3 {
   margin: 0 0 0.5rem;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
 }
 
 /* ---------- Projects ---------- */
-pre {
-  margin: 1.5rem 0;
-  padding: 1rem 1.25rem;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  overflow-x: auto;
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  line-height: 1.6;
+.project-list {
+  display: grid;
+  gap: 1.75rem;
 }
 
-code {
-  font-family: inherit;
+.project {
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+@media (min-width: 40rem) {
+  .project {
+    padding: 2rem;
+  }
+}
+
+.project:hover {
+  transform: translateY(-4px);
+  border-color: rgba(143, 176, 255, 0.55);
+  box-shadow: 0 20px 44px -20px rgba(0, 0, 0, 0.8);
+}
+
+/* Screenshots keep their natural size and never stretch past it */
+.shot {
+  width: fit-content;
+  max-width: 100%;
+  margin: 1.5rem 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--terminal);
+  overflow: hidden;
+}
+
+.shot img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  transition: transform 0.5s ease;
+}
+
+.project:hover .shot img {
+  transform: scale(1.02);
 }
 
 .tags {
@@ -202,19 +463,29 @@ code {
 }
 
 .tags li {
-  padding: 0.15rem 0.7rem;
+  padding: 0.15rem 0.75rem;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: 999px;
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+.project-link {
+  margin: 0;
 }
 
 /* ---------- Skills ---------- */
 .skills {
   display: grid;
-  grid-template-columns: 8rem 1fr;
-  gap: 0.75rem 1.5rem;
+  gap: 0.5rem 1.5rem;
   margin: 0;
+}
+
+@media (min-width: 40rem) {
+  .skills {
+    grid-template-columns: 7rem 1fr;
+    align-items: center;
+  }
 }
 
 .skills dt {
@@ -222,7 +493,45 @@ code {
 }
 
 .skills dd {
+  margin: 0 0 1rem;
+}
+
+@media (min-width: 40rem) {
+  .skills dd {
+    margin: 0;
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
   margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chips li {
+  padding: 0.35rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.chips li:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ---------- Contact ---------- */
+.contact-email {
+  margin-bottom: 1.5rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.1rem, 4.6vw, 1.75rem);
+  overflow-wrap: anywhere;
 }
 
 /* ---------- Footer ---------- */
@@ -237,19 +546,32 @@ code {
   margin: 0;
 }
 
-/* Space between projects */
-.project + .project {
-  margin-top: 3rem;
-  padding-top: 3rem;
-  border-top: 1px solid var(--line);
+/* ---------- Small screens ---------- */
+@media (max-width: 40rem) {
+  .terminal-body {
+    font-size: 0.72rem;
+  }
 }
 
-/* Project screenshots */
-.screenshot {
-  display: block;
-  width: 100%;
-  height: auto;
-  margin: 1.5rem 0;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+/* ---------- Respect "reduce motion" settings ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .cursor {
+    display: none;
+  }
 }
