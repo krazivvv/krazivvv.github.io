@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jaber Ziv Pamittan | Portfolio</title>
+  <meta name="description" content="Computer Science graduate looking for entry-level IT support and software roles.">
+
+  <!-- Fonts: if you're offline, the page falls back to your system fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header wrap">
+    <a class="site-name" href="#top">Jaber Ziv Pamittan</a>
+    <nav aria-label="Main">
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main id="top">
+
+    <!-- Intro -->
+    <section class="hero wrap">
+      <h1>Jaber Ziv Pamittan</h1>
+      <p class="lead">
+        Computer Science graduate looking for entry-level IT support and software roles.
+        I'm building small tools in Python, Java, and C# and publishing them on GitHub.
+      </p>
+      <p class="actions">
+        <a class="button" href="#projects">See my projects</a>
+        <a class="button button-quiet" href="https://github.com/krazivvv">GitHub profile</a>
+      </p>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="section wrap">
+      <h2>Projects</h2>
+
+      <article class="project">
+        <h3>File Organizer</h3>
+        <p>
+          A command-line tool that sorts a messy folder into subfolders by file type.
+          It shows a preview before moving anything, and it renames duplicates instead of overwriting files.
+        </p>
+
+<pre><code>python file_organizer.py randoms --apply
+Moved:   Screenshot 2026-09-19 110342.png  -&gt;  Images/Screenshot 2026-09-19 110342.png
+Moved:   Document (1).docx  -&gt;  Documents/Document (1).docx
+...
+Done. 7 file(s) organized.</code></pre>
+
+        <ul class="tags" aria-label="Technologies used">
+          <li>Python</li>
+          <li>pathlib</li>
+          <li>argparse</li>
+          <li>shutil</li>
+        </ul>
+
+        <p><a href="https://github.com/krazivvv/file-organizer">View the code on GitHub</a></p>
+      </article>
+
+      <!-- Add your next project here by copying the <article> above -->
+    </section>
+
+    <!-- Skills -->
+    <section id="skills" class="section wrap">
+      <h2>Skills</h2>
+      <dl class="skills">
+        <dt>Languages</dt>
+        <dd>Java, Python, C#</dd>
+        <dt>Web</dt>
+        <dd>HTML, CSS</dd>
+        <dt>Tools</dt>
+        <dd>Git, GitHub, VS Code</dd>
+      </dl>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section wrap">
+      <h2>Contact</h2>
+      <p>
+        I'm open to entry-level IT support and software roles.
+        The fastest way to reach me is by email.
+      </p>
+      <p><a href="mailto:jaberzivpamittan26@gmail.com">jaberzivpamittan26@gmail.com</a></p>
+    </section>
+
+  </main>
+
+  <footer class="site-footer wrap">
+    <p>&copy; 2026 Jaber Ziv Pamittan</p>
+  </footer>
+
+</body>
+</html>
