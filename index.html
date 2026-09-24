@@ -29,6 +29,12 @@
 </head>
 <body>
 
+  <div class="bg-blobs" aria-hidden="true">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+  </div>
+
   <a class="skip-link" href="#top">Skip to main content</a>
 
   <div class="scroll-progress" aria-hidden="true"><div class="scroll-progress-bar" id="progressBar"></div></div>
@@ -51,7 +57,10 @@
     <section class="hero wrap">
       <div class="hero-text">
         <p class="status rise" style="--d: 0s"><span class="dot"></span>Open to entry-level roles</p>
-        <h1 class="rise" style="--d: 0.08s">Jaber Ziv Pamittan</h1>
+        <h1 class="rise gradient-name" style="--d: 0.08s">Jaber Ziv Pamittan</h1>
+        <p class="role-rotator rise" style="--d: 0.1s">
+          <span id="roleText">IT Support Specialist</span><span class="role-cursor" aria-hidden="true"></span>
+        </p>
         <p class="tagline rise" style="--d: 0.12s">Turning broken things into working ones, one bug at a time.</p>
         <p class="lead rise" style="--d: 0.16s">
           Computer Science graduate looking for entry-level IT support and software roles.
@@ -126,6 +135,7 @@
 
         <article class="project" data-lang="python">
           <div class="project-content">
+          <span class="project-num" aria-hidden="true">01</span>
           <h3>File Organizer</h3>
           <p>
             Downloads folders pile up fast, and sorting them by hand is tedious. This command-line
@@ -149,12 +159,17 @@
           </div>
 
           <figure class="shot">
+            <div class="shot-bar" aria-hidden="true">
+              <span></span><span></span><span></span>
+              <em class="shot-title">file-organizer</em>
+            </div>
             <img src="images/file-organizer.png" alt="Terminal showing the File Organizer moving six files into Archives, Documents, Images, Code, and Audio folders" loading="lazy">
           </figure>
         </article>
 
         <article class="project" data-lang="java">
           <div class="project-content">
+          <span class="project-num" aria-hidden="true">02</span>
           <h3>Grade Tracker</h3>
           <p>
             Tracking grades by hand in a spreadsheet gets messy once there are several subjects
@@ -178,12 +193,17 @@
           </div>
 
           <figure class="shot">
+            <div class="shot-bar" aria-hidden="true">
+              <span></span><span></span><span></span>
+              <em class="shot-title">grade-tracker</em>
+            </div>
             <img src="images/grade-tracker.png" alt="Terminal showing a student report from the Grade Tracker with subjects, scores, and an average" loading="lazy">
           </figure>
         </article>
 
         <article class="project" data-lang="csharp">
           <div class="project-content">
+          <span class="project-num" aria-hidden="true">03</span>
           <h3>Inventory Manager</h3>
           <p>
             Small stockrooms often lose track of what's running low until it's too late. This C#
@@ -208,6 +228,10 @@
           </div>
 
           <figure class="shot">
+            <div class="shot-bar" aria-hidden="true">
+              <span></span><span></span><span></span>
+              <em class="shot-title">inventory-manager</em>
+            </div>
             <img src="images/inventory-manager.png" alt="Terminal showing the Inventory Manager table with quantities, prices, values, and a low stock flag" loading="lazy">
           </figure>
         </article>
@@ -339,6 +363,23 @@
             }
           };
           setTimeout(typeNext, 900);
+        }
+
+        /* 1b. Role rotator: cycles through a few titles under the name */
+        var roleEl = document.getElementById('roleText');
+        if (roleEl && !reduceMotion) {
+          var roles = ['IT Support Specialist', 'Software Developer', 'Problem Solver'];
+          var roleIndex = 0;
+
+          var cycleRole = function () {
+            roleEl.classList.add('is-fading');
+            setTimeout(function () {
+              roleIndex = (roleIndex + 1) % roles.length;
+              roleEl.textContent = roles[roleIndex];
+              roleEl.classList.remove('is-fading');
+            }, 350);
+          };
+          setInterval(cycleRole, 2600);
         }
 
         /* 2. Sections fade in as you scroll to them */
