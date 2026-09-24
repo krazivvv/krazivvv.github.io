@@ -254,12 +254,19 @@ p {
 }
 
 h1 {
-  margin: 0 0 1.5rem;
+  margin: 0 0 0.6rem;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: clamp(2.6rem, 7vw, 4.5rem);
   line-height: 1.02;
   letter-spacing: -0.03em;
+}
+
+.tagline {
+  margin: 0 0 1.75rem;
+  color: var(--accent-2);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
 }
 
 .lead {
@@ -444,6 +451,43 @@ h3 {
   font-size: 1.4rem;
 }
 
+.learning-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.pulse-dot {
+  position: relative;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--accent-2);
+  flex-shrink: 0;
+}
+
+.pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--accent-2);
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.section-intro {
+  max-width: 40rem;
+  margin: -1rem 0 2rem;
+  color: var(--muted);
+}
+
 /* ---------- Projects ---------- */
 .project-list {
   display: grid;
@@ -451,6 +495,8 @@ h3 {
 }
 
 .project {
+  display: grid;
+  gap: 1.5rem;
   padding: 1.5rem;
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -464,6 +510,23 @@ h3 {
   }
 }
 
+/* On wide screens, content and screenshot sit side by side, alternating which side the image is on */
+@media (min-width: 60rem) {
+  .project {
+    grid-template-columns: 1.1fr 1fr;
+    align-items: center;
+    gap: 2.5rem;
+  }
+
+  .project:nth-child(even) .shot {
+    order: -1;
+  }
+}
+
+.project-content {
+  min-width: 0;
+}
+
 .project:hover {
   transform: translateY(-4px);
   border-color: rgba(143, 176, 255, 0.55);
@@ -474,11 +537,18 @@ h3 {
 .shot {
   width: fit-content;
   max-width: 100%;
-  margin: 1.5rem 0;
+  margin: 1.5rem 0 0;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   background: var(--terminal);
   overflow: hidden;
+}
+
+@media (min-width: 60rem) {
+  .shot {
+    width: 100%;
+    margin: 0;
+  }
 }
 
 .shot img {
@@ -490,6 +560,28 @@ h3 {
 
 .project:hover .shot img {
   transform: scale(1.02);
+}
+
+.challenge {
+  padding: 0.9rem 1.1rem;
+  border-left: 2px solid var(--accent);
+  background: rgba(143, 176, 255, 0.06);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.challenge strong {
+  color: var(--text);
+}
+
+.challenge code {
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  background: var(--terminal);
+  color: var(--accent-2);
+  font-family: var(--font-mono);
+  font-size: 0.85em;
 }
 
 .tags {
@@ -507,6 +599,25 @@ h3 {
   border-radius: 999px;
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+/* Each language gets its own accent color on its tag, so the stack is easy to scan */
+[data-lang="python"] .tag-lang {
+  border-color: rgba(126, 226, 168, 0.45);
+  background: rgba(126, 226, 168, 0.1);
+  color: var(--good);
+}
+
+[data-lang="java"] .tag-lang {
+  border-color: rgba(255, 184, 107, 0.45);
+  background: rgba(255, 184, 107, 0.1);
+  color: var(--accent-2);
+}
+
+[data-lang="csharp"] .tag-lang {
+  border-color: rgba(143, 176, 255, 0.5);
+  background: rgba(143, 176, 255, 0.12);
+  color: var(--accent);
 }
 
 .project-link {
@@ -587,6 +698,11 @@ h3 {
 
 .site-footer p {
   margin: 0;
+}
+
+.social-links {
+  display: flex;
+  gap: 1.1rem;
 }
 
 .footer-link {

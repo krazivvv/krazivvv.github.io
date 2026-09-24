@@ -50,6 +50,7 @@
       <div class="hero-text">
         <p class="status rise" style="--d: 0s"><span class="dot"></span>Open to entry-level roles</p>
         <h1 class="rise" style="--d: 0.08s">Jaber Ziv Pamittan</h1>
+        <p class="tagline rise" style="--d: 0.12s">Turning broken things into working ones, one bug at a time.</p>
         <p class="lead rise" style="--d: 0.16s">
           Computer Science graduate looking for entry-level IT support and software roles.
           I'm building small tools in Python, Java, and C# and publishing them on GitHub.
@@ -92,7 +93,11 @@
         </p>
         <p>
           My projects so far are small tools that I built from scratch, documented, and published
-          on GitHub. Each one started as a real annoyance I wanted to fix, not just an exercise.
+          on GitHub. I like writing code that's simple enough for someone else to read in five minutes.
+        </p>
+        <p class="learning-badge">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          Currently learning: SQL and Git branching workflows
         </p>
       </div>
     </section>
@@ -100,32 +105,45 @@
     <!-- Projects -->
     <section id="projects" class="section wrap reveal">
       <h2>Projects</h2>
+      <p class="section-intro">
+        Each one started as a real annoyance: files piling up, grades scattered across spreadsheets,
+        stock nobody tracked until it ran out. I built a small tool to fix each, then documented it
+        properly and put it on GitHub.
+      </p>
 
       <div class="project-list">
 
-        <article class="project">
+        <article class="project" data-lang="python">
+          <div class="project-content">
           <h3>File Organizer</h3>
           <p>
             Downloads folders pile up fast, and sorting them by hand is tedious. This command-line
             tool solves that by scanning a folder and sorting every file into subfolders by type.
             It shows a preview before moving anything, and it renames duplicates instead of overwriting files.
           </p>
-
-          <figure class="shot">
-            <img src="images/file-organizer.png" alt="Terminal showing the File Organizer moving six files into Archives, Documents, Images, Code, and Audio folders" loading="lazy">
-          </figure>
+          <p class="challenge">
+            <strong>Challenge:</strong> two files with the same name shouldn't overwrite each other.
+            I solved it by checking if the destination already exists and appending <code>(1)</code>,
+            <code>(2)</code>, and so on until the name is free.
+          </p>
 
           <ul class="tags" aria-label="Technologies used">
-            <li>Python</li>
+            <li class="tag-lang">Python</li>
             <li>pathlib</li>
             <li>argparse</li>
             <li>shutil</li>
           </ul>
 
           <p class="project-link"><a href="https://github.com/krazivvv/file-organizer">View the code on GitHub</a></p>
+          </div>
+
+          <figure class="shot">
+            <img src="images/file-organizer.png" alt="Terminal showing the File Organizer moving six files into Archives, Documents, Images, Code, and Audio folders" loading="lazy">
+          </figure>
         </article>
 
-        <article class="project">
+        <article class="project" data-lang="java">
+          <div class="project-content">
           <h3>Grade Tracker</h3>
           <p>
             Tracking grades by hand in a spreadsheet gets messy once there are several subjects
@@ -133,21 +151,28 @@
             per-student reports, checks every input, and saves data to a file so it is still there
             the next time you run it.
           </p>
-
-          <figure class="shot">
-            <img src="images/grade-tracker.png" alt="Terminal showing a student report from the Grade Tracker with subjects, scores, and an average" loading="lazy">
-          </figure>
+          <p class="challenge">
+            <strong>Challenge:</strong> the saved file could get edited by hand and end up with a broken
+            line. I made the loader skip any line that doesn't parse cleanly instead of crashing the
+            whole program on startup.
+          </p>
 
           <ul class="tags" aria-label="Technologies used">
-            <li>Java</li>
+            <li class="tag-lang">Java</li>
             <li>File I/O</li>
             <li>Collections</li>
           </ul>
 
           <p class="project-link"><a href="https://github.com/krazivvv/grade-tracker">View the code on GitHub</a></p>
+          </div>
+
+          <figure class="shot">
+            <img src="images/grade-tracker.png" alt="Terminal showing a student report from the Grade Tracker with subjects, scores, and an average" loading="lazy">
+          </figure>
         </article>
 
-        <article class="project">
+        <article class="project" data-lang="csharp">
+          <div class="project-content">
           <h3>Inventory Manager</h3>
           <p>
             Small stockrooms often lose track of what's running low until it's too late. This C#
@@ -155,19 +180,25 @@
             are running low, on top of checking every input and saving data to a file so it is still
             there the next time you run it.
           </p>
-
-          <figure class="shot">
-            <img src="images/inventory-manager.png" alt="Terminal showing the Inventory Manager table with quantities, prices, values, and a low stock flag" loading="lazy">
-          </figure>
+          <p class="challenge">
+            <strong>Challenge:</strong> stock can't go negative, but a person might type letters, a
+            decimal, or a number bigger than what's in stock. I used <code>TryParse</code> with a
+            retry loop so a bad entry just asks again instead of crashing.
+          </p>
 
           <ul class="tags" aria-label="Technologies used">
-            <li>C#</li>
+            <li class="tag-lang">C#</li>
             <li>.NET</li>
             <li>LINQ</li>
             <li>File I/O</li>
           </ul>
 
           <p class="project-link"><a href="https://github.com/krazivvv/inventory-manager">View the code on GitHub</a></p>
+          </div>
+
+          <figure class="shot">
+            <img src="images/inventory-manager.png" alt="Terminal showing the Inventory Manager table with quantities, prices, values, and a low stock flag" loading="lazy">
+          </figure>
         </article>
 
         <!-- Add your next project by copying one of the project articles above -->
@@ -224,17 +255,34 @@
 
   <footer class="site-footer wrap">
     <p>&copy; 2026 Jaber Ziv Pamittan</p>
-    <a class="footer-link" href="https://github.com/krazivvv" aria-label="GitHub profile">
-      <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
-          0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
-          -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07
-          -1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18
-          1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82
-          1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2
-          0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/>
-      </svg>
-    </a>
+    <div class="social-links">
+      <a class="footer-link" href="https://github.com/krazivvv" aria-label="GitHub profile">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+            0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+            -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07
+            -1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18
+            1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82
+            1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2
+            0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/>
+        </svg>
+      </a>
+      <a class="footer-link" href="https://www.linkedin.com/in/jaber-pamittan-a6659b420" aria-label="LinkedIn profile">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M13.5 0h-11A2.5 2.5 0 0 0 0 2.5v11A2.5 2.5 0 0 0 2.5 16h11a2.5 2.5 0 0 0 2.5-2.5v-11A2.5 2.5 0 0 0 13.5 0ZM4.94 13.44H2.4V6h2.54v7.44ZM3.67 4.93a1.47 1.47 0 1 1 0-2.94 1.47 1.47 0 0 1 0 2.94Zm9.77 8.51h-2.54V9.83c0-.86-.02-1.96-1.2-1.96-1.2 0-1.38.94-1.38 1.9v3.67H5.78V6h2.44v1.02h.03c.34-.64 1.17-1.32 2.4-1.32 2.57 0 3.04 1.69 3.04 3.89v3.85Z"/>
+        </svg>
+      </a>
+      <a class="footer-link" href="https://www.instagram.com/krazivvv/" aria-label="Instagram profile">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M8 1.44c2.14 0 2.39.01 3.23.05.78.03 1.2.16 1.48.27.37.14.64.32.92.6.28.28.45.55.6.92.11.28.24.7.27 1.48.04.84.05 1.09.05 3.23s-.01 2.39-.05 3.23c-.03.78-.16 1.2-.27 1.48-.15.37-.32.64-.6.92-.28.28-.55.45-.92.6-.28.11-.7.24-1.48.27-.84.04-1.09.05-3.23.05s-2.39-.01-3.23-.05c-.78-.03-1.2-.16-1.48-.27a2.48 2.48 0 0 1-.92-.6 2.48 2.48 0 0 1-.6-.92c-.11-.28-.24-.7-.27-1.48C1.45 10.39 1.44 10.14 1.44 8s.01-2.39.05-3.23c.03-.78.16-1.2.27-1.48.14-.37.32-.64.6-.92.28-.28.55-.45.92-.6.28-.11.7-.24 1.48-.27.84-.04 1.09-.05 3.23-.05ZM8 0C5.82 0 5.55.01 4.7.05c-.86.04-1.44.17-1.96.37a3.9 3.9 0 0 0-1.42.93 3.9 3.9 0 0 0-.93 1.42c-.2.52-.33 1.1-.37 1.96C.01 5.55 0 5.82 0 8s.01 2.45.05 3.3c.04.86.17 1.44.37 1.96.2.53.48.98.93 1.42.44.45.89.72 1.42.93.52.2 1.1.33 1.96.37.85.04 1.12.05 3.3.05s2.45-.01 3.3-.05c.86-.04 1.44-.17 1.96-.37a3.9 3.9 0 0 0 1.42-.93c.45-.44.72-.89.93-1.42.2-.52.33-1.1.37-1.96.04-.85.05-1.12.05-3.3s-.01-2.45-.05-3.3c-.04-.86-.17-1.44-.37-1.96a3.9 3.9 0 0 0-.93-1.42A3.9 3.9 0 0 0 11.26.42c-.52-.2-1.1-.33-1.96-.37C8.45.01 8.18 0 8 0Zm0 3.89a4.11 4.11 0 1 0 0 8.22 4.11 4.11 0 0 0 0-8.22Zm0 6.78a2.67 2.67 0 1 1 0-5.34 2.67 2.67 0 0 1 0 5.34Zm4.27-6.94a.96.96 0 1 1-1.92 0 .96.96 0 0 1 1.92 0Z"/>
+        </svg>
+      </a>
+      <a class="footer-link" href="https://www.facebook.com/jaberziv" aria-label="Facebook profile">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M16 8.05A8 8 0 1 0 6.75 16v-5.6H4.72V8.05h2.03V6.28c0-2.02 1.19-3.13 3.01-3.13.87 0 1.78.16 1.78.16v1.97h-1c-.99 0-1.3.62-1.3 1.25v1.5h2.2l-.35 2.35H9.24V16A8 8 0 0 0 16 8.05Z"/>
+        </svg>
+      </a>
+    </div>
   </footer>
 
   <script>
