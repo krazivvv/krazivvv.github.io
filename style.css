@@ -249,7 +249,9 @@ p {
   position: relative;
   padding-block: 0.25rem;
   color: var(--muted);
+  font-weight: 400;
   text-decoration: none;
+  transition: color 0.2s ease, font-weight 0.2s ease;
 }
 
 .site-header nav a::after {
@@ -268,6 +270,10 @@ p {
 .site-header nav a:hover,
 .site-header nav a.active {
   color: var(--text);
+}
+
+.site-header nav a.active {
+  font-weight: 700;
 }
 
 .site-header nav a:hover::after,
@@ -921,12 +927,103 @@ h3 {
 }
 
 /* ---------- Contact ---------- */
-.contact-email {
-  margin-bottom: 1.5rem;
+.contact-card {
+  padding: 1.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(30rem 16rem at 100% 0%, rgba(143, 176, 255, 0.08), transparent 70%),
+    var(--surface);
+}
+
+@media (min-width: 40rem) {
+  .contact-card {
+    padding: 2.25rem;
+  }
+}
+
+.contact-tile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.5rem 0 1.75rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--terminal);
+  text-decoration: none;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.contact-tile:hover {
+  border-color: var(--accent);
+  transform: translateX(4px);
+}
+
+.contact-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: rgba(143, 176, 255, 0.12);
+  color: var(--accent);
+}
+
+.contact-tile-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.contact-tile-label {
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.contact-tile-value {
+  overflow-wrap: anywhere;
+  color: var(--text);
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(1.1rem, 4.6vw, 1.75rem);
-  overflow-wrap: anywhere;
+  font-size: clamp(1rem, 3.6vw, 1.25rem);
+}
+
+.contact-tile-arrow {
+  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 1.2rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.contact-tile:hover .contact-tile-arrow {
+  transform: translateX(3px);
+  color: var(--accent);
+}
+
+.contact-socials {
+  display: flex;
+  gap: 1.1rem;
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.contact-socials a {
+  display: inline-flex;
+  color: var(--muted);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.contact-socials a:hover {
+  color: var(--accent);
+  transform: translateY(-2px);
 }
 
 /* ---------- Footer ---------- */
