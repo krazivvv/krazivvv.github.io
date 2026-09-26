@@ -10,6 +10,8 @@
   --accent: #8fb0ff;
   --accent-2: #ffb86b;
   --good: #7ee2a8;
+  --bright: #ffb86b;
+  --lang-java: #ffb86b;
 
   /* Fixed dark-terminal colors: the terminal windows and screenshot frames always look
      like a real dark terminal, whichever site theme is active, so these never change. */
@@ -39,8 +41,10 @@
   --text: #14202b;
   --muted: #54677a;
   --accent: #2563eb;
-  --accent-2: #a55d08;
+  --accent-2: #0369a1;
   --good: #1f9254;
+  --bright: #0ea5e9;
+  --lang-java: #a55d08;
 }
 
 /* ---------- Base ---------- */
@@ -73,6 +77,10 @@ html {
   background: var(--line);
   border-radius: 999px;
   border: 2px solid var(--bg);
+}
+
+:root[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #b8cbe0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -131,6 +139,24 @@ body {
   height: 30rem;
   background: radial-gradient(circle, rgba(126, 226, 168, 0.1), transparent 70%);
   animation: drift3 38s ease-in-out infinite;
+}
+
+/* Pale tints that read fine on a dark background disappear on white, so light mode
+   gets its own bolder, sky-blue-toned set instead of just inheriting the dark ones. */
+:root[data-theme="light"] .blob {
+  opacity: 0.8;
+}
+
+:root[data-theme="light"] .blob-1 {
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.35), transparent 70%);
+}
+
+:root[data-theme="light"] .blob-2 {
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.3), transparent 70%);
+}
+
+:root[data-theme="light"] .blob-3 {
+  background: radial-gradient(circle, rgba(125, 211, 252, 0.35), transparent 70%);
 }
 
 @keyframes drift1 {
@@ -237,7 +263,7 @@ p {
 .scroll-progress-bar {
   height: 100%;
   width: 0%;
-  background: linear-gradient(to right, var(--accent), var(--accent-2));
+  background: linear-gradient(to right, var(--accent), var(--bright));
 }
 
 /* ---------- Header ---------- */
@@ -396,6 +422,12 @@ p {
   z-index: -1;
 }
 
+:root[data-theme="light"] .hero::before {
+  background-image:
+    linear-gradient(to right, rgba(37, 99, 235, 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(37, 99, 235, 0.09) 1px, transparent 1px);
+}
+
 @media (min-width: 60rem) {
   .hero {
     grid-template-columns: 1fr 1fr;
@@ -528,6 +560,12 @@ p {
   font-size: 0.9rem;
 }
 
+:root[data-theme="light"] .status {
+  border-color: rgba(37, 99, 235, 0.25);
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(20, 32, 43, 0.08);
+}
+
 .dot {
   position: relative;
   width: 0.5rem;
@@ -567,7 +605,7 @@ h1 {
 }
 
 .gradient-name {
-  background: linear-gradient(100deg, var(--text) 30%, var(--accent) 68%, var(--accent-2) 100%);
+  background: linear-gradient(100deg, var(--text) 30%, var(--accent) 68%, var(--bright) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -882,10 +920,19 @@ h3 {
   user-select: none;
 }
 
+:root[data-theme="light"] .project-num {
+  color: rgba(37, 99, 235, 0.12);
+}
+
 .project:hover {
   transform: translateY(-4px);
   border-color: rgba(143, 176, 255, 0.55);
   box-shadow: 0 20px 44px -20px rgba(0, 0, 0, 0.8);
+}
+
+:root[data-theme="light"] .project:hover {
+  border-color: rgba(37, 99, 235, 0.4);
+  box-shadow: 0 20px 44px -20px rgba(37, 99, 235, 0.35);
 }
 
 /* Screenshots keep their natural size and never stretch past it */
@@ -998,13 +1045,28 @@ h3 {
 [data-lang="java"] .tag-lang {
   border-color: rgba(255, 184, 107, 0.45);
   background: rgba(255, 184, 107, 0.1);
-  color: var(--accent-2);
+  color: var(--lang-java);
+}
+
+:root[data-theme="light"] [data-lang="java"] .tag-lang {
+  border-color: rgba(165, 93, 8, 0.35);
+  background: rgba(165, 93, 8, 0.1);
 }
 
 [data-lang="csharp"] .tag-lang {
   border-color: rgba(143, 176, 255, 0.5);
   background: rgba(143, 176, 255, 0.12);
   color: var(--accent);
+}
+
+:root[data-theme="light"] [data-lang="python"] .tag-lang {
+  border-color: rgba(31, 146, 84, 0.35);
+  background: rgba(31, 146, 84, 0.1);
+}
+
+:root[data-theme="light"] [data-lang="csharp"] .tag-lang {
+  border-color: rgba(37, 99, 235, 0.35);
+  background: rgba(37, 99, 235, 0.1);
 }
 
 .project-link {
