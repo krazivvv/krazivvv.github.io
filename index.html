@@ -43,6 +43,9 @@
     <span class="blob blob-3"></span>
   </div>
 
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
   <a class="skip-link" href="#top">Skip to main content</a>
 
   <div class="scroll-progress" aria-hidden="true"><div class="scroll-progress-bar" id="progressBar"></div></div>
@@ -108,21 +111,33 @@
       </div>
 
       <!-- Terminal: types out a real run of the File Organizer (the text is also here for browsers without JavaScript) -->
-      <div class="terminal rise" id="term" style="--d: 0.32s" role="img" aria-label="Animated terminal showing the File Organizer sorting six files into folders">
+      <div class="terminal rise" id="term" style="--d: 0.32s">
         <div class="terminal-bar" aria-hidden="true">
           <span></span><span></span><span></span>
           <em class="terminal-title">file-organizer</em>
         </div>
-        <div class="terminal-body" aria-hidden="true">
-          <div class="line"><span class="prompt">$</span> <span class="typed">python file_organizer.py demo --apply</span><span class="cursor"></span></div>
-          <div class="out first"><span class="k">Moved:</span>   backup.zip  <span class="arrow">-&gt;</span>  Archives/backup.zip</div>
-          <div class="out"><span class="k">Moved:</span>   notes.txt  <span class="arrow">-&gt;</span>  Documents/notes.txt</div>
-          <div class="out"><span class="k">Moved:</span>   photo.jpg  <span class="arrow">-&gt;</span>  Images/photo.jpg</div>
-          <div class="out"><span class="k">Moved:</span>   report.pdf  <span class="arrow">-&gt;</span>  Documents/report.pdf</div>
-          <div class="out"><span class="k">Moved:</span>   script.py  <span class="arrow">-&gt;</span>  Code/script.py</div>
-          <div class="out"><span class="k">Moved:</span>   song.mp3  <span class="arrow">-&gt;</span>  Audio/song.mp3</div>
-          <div class="out done">Done. 6 file(s) organized.</div>
+        <div class="terminal-body" id="terminalBody">
+          <div aria-hidden="true">
+            <div class="line"><span class="prompt">$</span> <span class="typed">python file_organizer.py demo --apply</span><span class="cursor" id="typingCursor"></span></div>
+            <div class="out first"><span class="k">Moved:</span>   backup.zip  <span class="arrow">-&gt;</span>  Archives/backup.zip</div>
+            <div class="out"><span class="k">Moved:</span>   notes.txt  <span class="arrow">-&gt;</span>  Documents/notes.txt</div>
+            <div class="out"><span class="k">Moved:</span>   photo.jpg  <span class="arrow">-&gt;</span>  Images/photo.jpg</div>
+            <div class="out"><span class="k">Moved:</span>   report.pdf  <span class="arrow">-&gt;</span>  Documents/report.pdf</div>
+            <div class="out"><span class="k">Moved:</span>   script.py  <span class="arrow">-&gt;</span>  Code/script.py</div>
+            <div class="out"><span class="k">Moved:</span>   song.mp3  <span class="arrow">-&gt;</span>  Audio/song.mp3</div>
+            <div class="out done">Done. 6 file(s) organized.</div>
+          </div>
+
+          <div id="terminalLog"></div>
+
+          <div class="line live-line" id="liveLine" hidden>
+            <span class="prompt">$</span>
+            <span id="liveEcho"></span><span class="cursor" id="liveCursor"></span>
+          </div>
         </div>
+
+        <label class="sr-only" for="terminalInput">Terminal command input — type help and press Enter for a list of commands</label>
+        <input type="text" id="terminalInput" class="terminal-input" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
       </div>
 
       <a href="#about" class="scroll-hint" id="scrollHint" aria-label="Scroll down to About">
@@ -175,7 +190,7 @@
 
       <div class="project-list">
 
-        <article class="project" data-lang="python">
+        <article class="project reveal" data-lang="python">
           <div class="project-content">
           <span class="project-num" aria-hidden="true">01</span>
           <h3>File Organizer</h3>
@@ -209,7 +224,7 @@
           </figure>
         </article>
 
-        <article class="project" data-lang="java">
+        <article class="project reveal" data-lang="java">
           <div class="project-content">
           <span class="project-num" aria-hidden="true">02</span>
           <h3>Grade Tracker</h3>
@@ -243,7 +258,7 @@
           </figure>
         </article>
 
-        <article class="project" data-lang="csharp">
+        <article class="project reveal" data-lang="csharp">
           <div class="project-content">
           <span class="project-num" aria-hidden="true">03</span>
           <h3>Inventory Manager</h3>
@@ -405,6 +420,15 @@
     </div>
   </footer>
 
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged screenshot" hidden>
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <path d="M4 4l12 12M16 4 4 16" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <img id="lightboxImg" src="" alt="">
+  </div>
+
   <a href="#top" class="back-to-top" id="backToTop" aria-label="Back to top">
     <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
       <path d="M8 13V3M3 7l5-5 5 5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -483,8 +507,112 @@
           }
         });
 
-        /* 1. Terminal: type the command, then print the output lines one by one */
+        /* 0c-ii. Click a project screenshot to see it full-size */
+        var lightbox = document.getElementById('lightbox');
+        var lightboxImg = document.getElementById('lightboxImg');
+        var lightboxClose = document.getElementById('lightboxClose');
+
+        if (lightbox && lightboxImg && lightboxClose) {
+          var openLightbox = function (src, alt) {
+            lightboxImg.src = src;
+            lightboxImg.alt = alt;
+            lightbox.hidden = false;
+            requestAnimationFrame(function () { lightbox.classList.add('is-open'); });
+            document.body.style.overflow = 'hidden';
+            lightboxClose.focus();
+          };
+
+          var closeLightbox = function () {
+            lightbox.classList.remove('is-open');
+            document.body.style.overflow = '';
+            setTimeout(function () {
+              lightbox.hidden = true;
+              lightboxImg.src = '';
+            }, 200);
+          };
+
+          document.querySelectorAll('.shot').forEach(function (shot) {
+            var img = shot.querySelector('img');
+            if (!img) return;
+            shot.setAttribute('tabindex', '0');
+            shot.setAttribute('role', 'button');
+            shot.setAttribute('aria-label', 'View larger: ' + img.alt);
+            shot.addEventListener('click', function () { openLightbox(img.src, img.alt); });
+            shot.addEventListener('keydown', function (e) {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openLightbox(img.src, img.alt);
+              }
+            });
+          });
+
+          lightboxClose.addEventListener('click', closeLightbox);
+          lightbox.addEventListener('click', function (e) {
+            if (e.target === lightbox) closeLightbox();
+          });
+          document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && !lightbox.hidden) closeLightbox();
+          });
+        }
+
+        /* 0d. Custom cursor: only on devices with a real mouse (never on touch, so it can't get "stuck") */
+        var supportsCustomCursor = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        var cursorDot = document.getElementById('cursorDot');
+        var cursorRing = document.getElementById('cursorRing');
+
+        if (supportsCustomCursor && cursorDot && cursorRing && !reduceMotion) {
+          document.documentElement.classList.add('custom-cursor');
+
+          var moveCursor = function (x, y) {
+            cursorDot.style.left = x + 'px';
+            cursorDot.style.top = y + 'px';
+            cursorRing.style.left = x + 'px';
+            cursorRing.style.top = y + 'px';
+          };
+
+          document.addEventListener('mousemove', function (e) {
+            cursorDot.classList.add('is-visible');
+            cursorRing.classList.add('is-visible');
+            moveCursor(e.clientX, e.clientY);
+          });
+
+          document.addEventListener('mouseleave', function () {
+            cursorDot.classList.remove('is-visible');
+            cursorRing.classList.remove('is-visible');
+          });
+
+          var hoverSelector = 'a, button, input, .project, .contact-tile, .chips li, .shot, [tabindex]';
+          document.addEventListener('mouseover', function (e) {
+            if (e.target.closest(hoverSelector)) {
+              cursorRing.classList.add('is-active');
+            }
+          });
+          document.addEventListener('mouseout', function (e) {
+            if (e.target.closest(hoverSelector)) {
+              cursorRing.classList.remove('is-active');
+            }
+          });
+        } else if (cursorDot && cursorRing) {
+          cursorDot.style.display = 'none';
+          cursorRing.style.display = 'none';
+        }
+
+        /* 1. Terminal: type the command, then print the output lines one by one,
+              then hand control over to a real, typeable prompt */
         var term = document.getElementById('term');
+        var terminalBody = document.getElementById('terminalBody');
+        var terminalInput = document.getElementById('terminalInput');
+        var terminalLog = document.getElementById('terminalLog');
+        var liveLine = document.getElementById('liveLine');
+        var liveEcho = document.getElementById('liveEcho');
+        var typingCursor = document.getElementById('typingCursor');
+
+        var goLive = function () {
+          if (typingCursor) typingCursor.style.display = 'none';
+          if (liveLine) liveLine.hidden = false;
+          term.classList.add('is-live');
+        };
+
         if (term && !reduceMotion) {
           var typed = term.querySelector('.typed');
           var outputLines = term.querySelectorAll('.out');
@@ -507,9 +635,132 @@
             if (n < outputLines.length) {
               outputLines[n].classList.remove('pending');
               setTimeout(function () { showLine(n + 1); }, 230);
+            } else {
+              setTimeout(goLive, 300);
             }
           };
           setTimeout(typeNext, 900);
+        } else if (term) {
+          goLive();
+        }
+
+        /* 1c. The terminal is now a real, small command line the visitor can type into */
+        if (term && terminalInput && terminalLog && liveEcho) {
+          var history = [];
+          var historyPos = -1;
+
+          var scrollTerminalToBottom = function () {
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+          };
+
+          var goToSection = function (id) {
+            var section = document.getElementById(id);
+            if (section) section.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+          };
+
+          var printLine = function (text, cls) {
+            var row = document.createElement('div');
+            row.className = 'out' + (cls ? ' ' + cls : '');
+            row.textContent = text;
+            terminalLog.appendChild(row);
+          };
+
+          var runCommand = function (raw) {
+            var echoRow = document.createElement('div');
+            echoRow.className = 'line';
+            var promptSpan = document.createElement('span');
+            promptSpan.className = 'prompt';
+            promptSpan.textContent = '$';
+            echoRow.appendChild(promptSpan);
+            echoRow.appendChild(document.createTextNode(' ' + raw));
+            terminalLog.appendChild(echoRow);
+
+            var cmd = raw.trim().toLowerCase();
+
+            if (cmd === '') {
+              /* just a fresh prompt, nothing to run */
+            } else if (cmd === 'help') {
+              printLine('Available commands:');
+              printLine('  about      about me');
+              printLine('  projects   list my projects');
+              printLine('  skills     what I work with');
+              printLine('  contact    how to reach me');
+              printLine('  ls         list files here');
+              printLine('  whoami     guess');
+              printLine('  clear      clear the screen');
+            } else if (cmd === 'about') {
+              printLine('CS grad building small tools and putting them on GitHub.');
+              printLine('Scrolling to About...');
+              goToSection('about');
+            } else if (cmd === 'projects' || cmd === 'ls') {
+              printLine('file-organizer/  grade-tracker/  inventory-manager/  resume.pdf');
+              if (cmd === 'projects') {
+                printLine('Scrolling to Projects...');
+                goToSection('projects');
+              }
+            } else if (cmd === 'skills') {
+              printLine('Java, Python, C#, HTML, CSS, Git, GitHub, VS Code');
+              printLine('Scrolling to Skills...');
+              goToSection('skills');
+            } else if (cmd === 'contact') {
+              printLine('jaberzivpamittan26@gmail.com');
+              printLine('Scrolling to Contact...');
+              goToSection('contact');
+            } else if (cmd === 'whoami') {
+              printLine('guest (hi! probably here to check out the projects)');
+            } else if (cmd === 'sudo' || cmd.indexOf('sudo ') === 0) {
+              printLine('Permission denied: guest is not in the sudoers file.');
+              printLine("(this incident won't actually be reported)");
+            } else if (cmd === 'date') {
+              printLine(new Date().toDateString());
+            } else if (cmd === 'clear') {
+              terminalLog.innerHTML = '';
+            } else {
+              printLine('command not found: ' + raw + " (type 'help')");
+            }
+
+            scrollTerminalToBottom();
+          };
+
+          terminalInput.addEventListener('input', function () {
+            liveEcho.textContent = terminalInput.value;
+          });
+
+          terminalInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+              var value = terminalInput.value;
+              if (value.trim() !== '') {
+                history.push(value);
+              }
+              historyPos = history.length;
+              runCommand(value);
+              terminalInput.value = '';
+              liveEcho.textContent = '';
+            } else if (e.key === 'ArrowUp') {
+              e.preventDefault();
+              if (historyPos > 0) {
+                historyPos -= 1;
+                terminalInput.value = history[historyPos];
+                liveEcho.textContent = terminalInput.value;
+              }
+            } else if (e.key === 'ArrowDown') {
+              e.preventDefault();
+              if (historyPos < history.length - 1) {
+                historyPos += 1;
+                terminalInput.value = history[historyPos];
+              } else {
+                historyPos = history.length;
+                terminalInput.value = '';
+              }
+              liveEcho.textContent = terminalInput.value;
+            }
+          });
+
+          term.addEventListener('click', function () {
+            terminalInput.focus();
+          });
+          terminalInput.addEventListener('focus', function () { term.classList.add('is-focused'); });
+          terminalInput.addEventListener('blur', function () { term.classList.remove('is-focused'); });
         }
 
         /* 1b. Role rotator: cycles through a few titles under the name */
