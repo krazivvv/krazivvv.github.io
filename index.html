@@ -43,8 +43,6 @@
     <span class="blob blob-3"></span>
   </div>
 
-  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
-  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
 
   <a class="skip-link" href="#top">Skip to main content</a>
 
@@ -130,10 +128,7 @@
 
           <div id="terminalLog"></div>
 
-          <div class="line live-line" id="liveLine" hidden>
-            <span class="prompt">$</span>
-            <span id="liveEcho"></span><span class="cursor" id="liveCursor"></span>
-          </div>
+          <div class="line live-line" id="liveLine" hidden><span class="prompt">$</span> <span id="liveEcho"></span><span class="cursor" id="liveCursor"></span></div>
         </div>
 
         <label class="sr-only" for="terminalInput">Terminal command input — type help and press Enter for a list of commands</label>
@@ -553,48 +548,6 @@
           document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && !lightbox.hidden) closeLightbox();
           });
-        }
-
-        /* 0d. Custom cursor: only on devices with a real mouse (never on touch, so it can't get "stuck") */
-        var supportsCustomCursor = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-        var cursorDot = document.getElementById('cursorDot');
-        var cursorRing = document.getElementById('cursorRing');
-
-        if (supportsCustomCursor && cursorDot && cursorRing && !reduceMotion) {
-          document.documentElement.classList.add('custom-cursor');
-
-          var moveCursor = function (x, y) {
-            cursorDot.style.left = x + 'px';
-            cursorDot.style.top = y + 'px';
-            cursorRing.style.left = x + 'px';
-            cursorRing.style.top = y + 'px';
-          };
-
-          document.addEventListener('mousemove', function (e) {
-            cursorDot.classList.add('is-visible');
-            cursorRing.classList.add('is-visible');
-            moveCursor(e.clientX, e.clientY);
-          });
-
-          document.addEventListener('mouseleave', function () {
-            cursorDot.classList.remove('is-visible');
-            cursorRing.classList.remove('is-visible');
-          });
-
-          var hoverSelector = 'a, button, input, .project, .contact-tile, .chips li, .shot, [tabindex]';
-          document.addEventListener('mouseover', function (e) {
-            if (e.target.closest(hoverSelector)) {
-              cursorRing.classList.add('is-active');
-            }
-          });
-          document.addEventListener('mouseout', function (e) {
-            if (e.target.closest(hoverSelector)) {
-              cursorRing.classList.remove('is-active');
-            }
-          });
-        } else if (cursorDot && cursorRing) {
-          cursorDot.style.display = 'none';
-          cursorRing.style.display = 'none';
         }
 
         /* 1. Terminal: type the command, then print the output lines one by one,
