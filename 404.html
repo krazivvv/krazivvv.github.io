@@ -16,9 +16,11 @@
   <script>
     document.documentElement.classList.add('js');
     try {
-      if (localStorage.getItem('theme') === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
+      var s = JSON.parse(localStorage.getItem('settings') || '{}') || {};
+      var theme = s.theme || (localStorage.getItem('theme') === 'light' ? 'light' : 'dark');
+      if (theme === 'system') theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      if (theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      if (s.accent && s.accent !== 'blue') document.documentElement.setAttribute('data-accent', s.accent);
     } catch (e) { /* ignore */ }
   </script>
 
@@ -49,6 +51,39 @@
       max-width: 32rem;
       color: var(--muted);
       font-size: 1.1rem;
+    }
+
+    /* Matches the pill-style theme switch used inside the main site's Settings panel */
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.9rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--accent);
+    }
+
+    .icon-moon {
+      display: none;
+    }
+
+    html[data-theme="light"] .icon-sun {
+      display: none;
+    }
+
+    html[data-theme="light"] .icon-moon {
+      display: inline-flex;
     }
   </style>
 </head>
@@ -111,7 +146,12 @@
           } else {
             document.documentElement.setAttribute('data-theme', 'light');
           }
-          try { localStorage.setItem('theme', isLight ? 'dark' : 'light'); } catch (e) { /* ignore */ }
+          try {
+            var s = JSON.parse(localStorage.getItem('settings') || '{}') || {};
+            s.theme = isLight ? 'dark' : 'light';
+            localStorage.setItem('settings', JSON.stringify(s));
+            localStorage.removeItem('theme');
+          } catch (e) { /* ignore */ }
           syncThemeLabel();
         });
         syncThemeLabel();

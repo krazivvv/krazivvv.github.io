@@ -24,13 +24,25 @@
 
   <!-- Lets the CSS know JavaScript is running, so scroll animations only happen when they can work -->
   <script>
-    document.documentElement.classList.add('js');
-    /* Apply any saved theme choice immediately, before the page paints, to avoid a flash of the wrong theme */
-    try {
-      if (localStorage.getItem('theme') === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
-    } catch (e) { /* localStorage can be unavailable in some private-browsing modes; default theme still works */ }
+    /* Apply saved Settings before the page paints, so there is no flash of the wrong theme.
+       (The full settings logic lives in the script at the bottom of the page.) */
+    (function () {
+      var d = document.documentElement;
+      d.classList.add('js');
+      var s = {};
+      try { s = JSON.parse(localStorage.getItem('settings') || '{}') || {}; } catch (e) { s = {}; }
+      try { if (!s.theme && localStorage.getItem('theme') === 'light') s.theme = 'light'; } catch (e) { /* older single-theme setting */ }
+
+      var theme = s.theme || 'dark';
+      if (theme === 'system') theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      if (theme === 'light') d.setAttribute('data-theme', 'light');
+      if (s.accent && s.accent !== 'blue') d.setAttribute('data-accent', s.accent);
+
+      var reduce = typeof s.reduceMotion === 'boolean' ? s.reduceMotion : window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce || s.animations === false || s.perf) d.classList.add('no-motion');
+      if (s.perf) d.classList.add('perf');
+      if (s.largeText) d.classList.add('large-text');
+    })();
   </script>
 
   <link rel="stylesheet" href="style.css">
@@ -60,7 +72,7 @@
         </svg>
       </button>
 
-      <div class="nav-panel" id="navPanel">
+      <div class="nav-panel" id="navPanel" inert>
         <nav aria-label="Main" id="mainNav">
           <a href="#about">About</a>
           <a href="#projects">Projects</a>
@@ -70,18 +82,58 @@
 
         <div class="nav-panel-divider"></div>
 
-        <div class="appearance-row">
-          <span class="appearance-label">Appearance</span>
-          <button class="theme-toggle" id="themeToggle" aria-label="Switch to light theme">
-            <svg class="icon-moon" width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-              <path d="M17.3 13.4A7.4 7.4 0 0 1 8.1 4.2c.15-.47-.32-.9-.77-.68a8.5 8.5 0 1 0 10.6 11.5c.2-.46-.25-.9-.63-.62Z"/>
-            </svg>
-            <svg class="icon-sun" width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-              <circle cx="10" cy="10" r="3.6"/>
-              <path d="M10 1.8v2M10 16.2v2M18.2 10h-2M3.8 10h-2M15.6 4.4l-1.4 1.4M5.8 14.2l-1.4 1.4M15.6 15.6l-1.4-1.4M5.8 5.8 4.4 4.4" stroke-linecap="round"/>
-            </svg>
-            <span class="theme-toggle-text">Dark</span>
-          </button>
+        <div class="settings" role="group" aria-labelledby="settingsTitle">
+          <p class="settings-title" id="settingsTitle">Settings</p>
+
+          <fieldset class="setting-group">
+            <legend>Appearance</legend>
+            <div class="segmented">
+              <span class="seg-opt"><input type="radio" name="theme" id="theme-dark" value="dark" checked><label for="theme-dark">Dark</label></span>
+              <span class="seg-opt"><input type="radio" name="theme" id="theme-light" value="light"><label for="theme-light">Light</label></span>
+              <span class="seg-opt"><input type="radio" name="theme" id="theme-system" value="system"><label for="theme-system">System</label></span>
+            </div>
+          </fieldset>
+
+          <fieldset class="setting-group">
+            <legend>Accent Color</legend>
+            <div class="swatches">
+              <span class="swatch" style="--sw-dark: #8fb0ff; --sw-light: #2563eb;"><input type="radio" name="accent" id="accent-blue" value="blue" checked><label for="accent-blue"><span class="sr-only">Blue</span></label></span>
+              <span class="swatch" style="--sw-dark: #b79cff; --sw-light: #7c3aed;"><input type="radio" name="accent" id="accent-purple" value="purple"><label for="accent-purple"><span class="sr-only">Purple</span></label></span>
+              <span class="swatch" style="--sw-dark: #6ee7b7; --sw-light: #047857;"><input type="radio" name="accent" id="accent-green" value="green"><label for="accent-green"><span class="sr-only">Green</span></label></span>
+              <span class="swatch" style="--sw-dark: #ff8fc7; --sw-light: #be185d;"><input type="radio" name="accent" id="accent-pink" value="pink"><label for="accent-pink"><span class="sr-only">Pink</span></label></span>
+              <span class="swatch" style="--sw-dark: #ffb86b; --sw-light: #c2410c;"><input type="radio" name="accent" id="accent-orange" value="orange"><label for="accent-orange"><span class="sr-only">Orange</span></label></span>
+            </div>
+          </fieldset>
+
+          <fieldset class="setting-group">
+            <legend>Experience</legend>
+            <div class="setting-row">
+              <span class="setting-name" id="lbl-animations">Animations</span>
+              <button type="button" class="switch" role="switch" aria-checked="true" aria-labelledby="lbl-animations" data-setting="animations">ON</button>
+            </div>
+            <div class="setting-row">
+              <span class="setting-name" id="lbl-sound">Sound Effects</span>
+              <button type="button" class="switch" role="switch" aria-checked="false" aria-labelledby="lbl-sound" data-setting="sound">OFF</button>
+            </div>
+            <div class="setting-row">
+              <span class="setting-name" id="lbl-perf">Performance Mode</span>
+              <button type="button" class="switch" role="switch" aria-checked="false" aria-labelledby="lbl-perf" data-setting="perf">OFF</button>
+            </div>
+          </fieldset>
+
+          <fieldset class="setting-group">
+            <legend>Accessibility</legend>
+            <div class="setting-row">
+              <span class="setting-name" id="lbl-reduceMotion">Reduce Motion</span>
+              <button type="button" class="switch" role="switch" aria-checked="false" aria-labelledby="lbl-reduceMotion" data-setting="reduceMotion">OFF</button>
+            </div>
+            <div class="setting-row">
+              <span class="setting-name" id="lbl-largeText">Large Text</span>
+              <button type="button" class="switch" role="switch" aria-checked="false" aria-labelledby="lbl-largeText" data-setting="largeText">OFF</button>
+            </div>
+          </fieldset>
+
+          <button type="button" class="reset-btn" id="resetSettings">Reset Settings</button>
         </div>
       </div>
     </div>
@@ -432,37 +484,201 @@
 
   <script>
     (function () {
-      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var root = document.documentElement;
       var revealEls = document.querySelectorAll('.reveal');
 
       function showAll() {
         revealEls.forEach(function (el) { el.classList.add('is-visible'); });
       }
 
-      try {
-        /* 0. Theme toggle (lives inside the menu panel, like a settings switch) */
-        var themeToggle = document.getElementById('themeToggle');
-        var themeToggleText = themeToggle ? themeToggle.querySelector('.theme-toggle-text') : null;
+      /* True whenever animations are off: Reduce Motion, Animations switched off, or Performance Mode */
+      function noMotion() {
+        return root.classList.contains('no-motion');
+      }
 
-        var syncThemeLabel = function () {
-          var isLight = document.documentElement.getAttribute('data-theme') === 'light';
-          if (themeToggleText) themeToggleText.textContent = isLight ? 'Light' : 'Dark';
-          if (themeToggle) themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
+      try {
+        /* 0. Settings: appearance, accent color, animations, sound, performance, accessibility.
+              Saved in the visitor's own browser (localStorage) and applied to <html> as attributes/classes. */
+        var SETTINGS_KEY = 'settings';
+        var ACCENTS = ['blue', 'purple', 'green', 'pink', 'orange'];
+        var THEMES = ['dark', 'light', 'system'];
+        var DEFAULT_SETTINGS = {
+          theme: 'dark',
+          accent: 'blue',
+          animations: true,
+          sound: false,
+          perf: false,
+          reduceMotion: null,   /* null = follow the operating-system preference until the visitor chooses */
+          largeText: false
         };
 
-        if (themeToggle) {
-          themeToggle.addEventListener('click', function () {
-            var isLight = document.documentElement.getAttribute('data-theme') === 'light';
-            if (isLight) {
-              document.documentElement.removeAttribute('data-theme');
-            } else {
-              document.documentElement.setAttribute('data-theme', 'light');
+        var osLight = window.matchMedia('(prefers-color-scheme: light)');
+        var osReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+        var loadSettings = function () {
+          var saved = {};
+          try { saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}') || {}; } catch (e) { saved = {}; }
+          try { if (!saved.theme && localStorage.getItem('theme') === 'light') saved.theme = 'light'; } catch (e) { /* older single-theme setting */ }
+
+          var out = {};
+          for (var key in DEFAULT_SETTINGS) {
+            out[key] = saved[key] !== undefined ? saved[key] : DEFAULT_SETTINGS[key];
+          }
+          if (THEMES.indexOf(out.theme) === -1) out.theme = DEFAULT_SETTINGS.theme;
+          if (ACCENTS.indexOf(out.accent) === -1) out.accent = DEFAULT_SETTINGS.accent;
+          ['animations', 'sound', 'perf', 'largeText'].forEach(function (k) { out[k] = !!out[k]; });
+          if (typeof out.reduceMotion !== 'boolean') out.reduceMotion = null;
+          return out;
+        };
+
+        var settings = loadSettings();
+
+        var saveSettings = function () {
+          try {
+            localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+            localStorage.removeItem('theme');
+          } catch (e) { /* private browsing can block storage; the settings still work for this visit */ }
+        };
+
+        var reduceEffective = function () {
+          return typeof settings.reduceMotion === 'boolean' ? settings.reduceMotion : osReduce.matches;
+        };
+
+        /* Sound effects: tiny tones made with the Web Audio API, so no audio files are needed.
+           Off by default; the browser only allows audio after a click or key press anyway. */
+        var audioCtx = null;
+        var ensureAudio = function () {
+          try {
+            if (!audioCtx) {
+              var AC = window.AudioContext || window.webkitAudioContext;
+              if (AC) audioCtx = new AC();
             }
-            try { localStorage.setItem('theme', isLight ? 'dark' : 'light'); } catch (e) { /* ignore */ }
-            syncThemeLabel();
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+          } catch (e) { audioCtx = null; }
+        };
+
+        var tone = function (freq, dur, vol, type, delay) {
+          if (!settings.sound) return;
+          ensureAudio();
+          if (!audioCtx) return;
+          var play = function () {
+            var t = audioCtx.currentTime + (delay || 0);
+            var osc = audioCtx.createOscillator();
+            var gain = audioCtx.createGain();
+            osc.type = type || 'sine';
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.0001, t);
+            gain.gain.exponentialRampToValueAtTime(vol || 0.04, t + 0.008);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(t);
+            osc.stop(t + dur + 0.03);
+          };
+          if (audioCtx.state === 'running') {
+            play();
+          } else {
+            audioCtx.resume().then(play).catch(function () { /* not allowed yet; skip */ });
+          }
+        };
+
+        var sfx = {
+          click: function () { tone(520, 0.06, 0.04, 'triangle'); },
+          key: function () { tone(650 + Math.random() * 250, 0.03, 0.03, 'square'); },
+          enter: function () { tone(420, 0.08, 0.04, 'triangle'); },
+          on: function () { tone(600, 0.08, 0.045, 'sine'); tone(900, 0.1, 0.045, 'sine', 0.07); },
+          off: function () { tone(500, 0.08, 0.045, 'sine'); tone(330, 0.1, 0.045, 'sine', 0.07); }
+        };
+
+        /* Keeps the settings panel controls showing what is actually in effect */
+        var syncSettingsUI = function () {
+          document.querySelectorAll('input[name="theme"]').forEach(function (r) { r.checked = r.value === settings.theme; });
+          document.querySelectorAll('input[name="accent"]').forEach(function (r) { r.checked = r.value === settings.accent; });
+          document.querySelectorAll('.switch').forEach(function (b) {
+            var key = b.getAttribute('data-setting');
+            var on = key === 'reduceMotion' ? reduceEffective() : !!settings[key];
+            b.setAttribute('aria-checked', on ? 'true' : 'false');
+            b.textContent = on ? 'ON' : 'OFF';
           });
-          syncThemeLabel();
+        };
+
+        var applySettings = function () {
+          var isLight = settings.theme === 'light' || (settings.theme === 'system' && osLight.matches);
+          if (isLight) root.setAttribute('data-theme', 'light'); else root.removeAttribute('data-theme');
+
+          if (settings.accent !== 'blue') root.setAttribute('data-accent', settings.accent); else root.removeAttribute('data-accent');
+
+          root.classList.toggle('no-motion', reduceEffective() || !settings.animations || settings.perf);
+          root.classList.toggle('perf', settings.perf);
+          root.classList.toggle('large-text', settings.largeText);
+
+          if (noMotion()) showAll();
+          syncSettingsUI();
+        };
+
+        document.querySelectorAll('input[name="theme"]').forEach(function (r) {
+          r.addEventListener('change', function () {
+            settings.theme = r.value;
+            saveSettings();
+            applySettings();
+            sfx.click();
+          });
+        });
+
+        document.querySelectorAll('input[name="accent"]').forEach(function (r) {
+          r.addEventListener('change', function () {
+            settings.accent = r.value;
+            saveSettings();
+            applySettings();
+            sfx.click();
+          });
+        });
+
+        document.querySelectorAll('.switch').forEach(function (b) {
+          b.addEventListener('click', function () {
+            var key = b.getAttribute('data-setting');
+            var next = key === 'reduceMotion' ? !reduceEffective() : !settings[key];
+            settings[key] = next;
+            if (key === 'sound' && next) ensureAudio();
+            saveSettings();
+            applySettings();
+            if (next) sfx.on(); else sfx.off();
+          });
+        });
+
+        var resetBtn = document.getElementById('resetSettings');
+        if (resetBtn) {
+          resetBtn.addEventListener('click', function () {
+            settings = loadDefaults();
+            try {
+              localStorage.removeItem(SETTINGS_KEY);
+              localStorage.removeItem('theme');
+            } catch (e) { /* ignore */ }
+            applySettings();
+          });
         }
+
+        var loadDefaults = function () {
+          var copy = {};
+          for (var key in DEFAULT_SETTINGS) copy[key] = DEFAULT_SETTINGS[key];
+          return copy;
+        };
+
+        /* If the visitor picked "System" (or has no Reduce Motion choice), follow their OS live */
+        if (osLight.addEventListener) {
+          osLight.addEventListener('change', function () { if (settings.theme === 'system') applySettings(); });
+        }
+        if (osReduce.addEventListener) {
+          osReduce.addEventListener('change', function () { if (settings.reduceMotion === null) applySettings(); });
+        }
+
+        /* A soft click on any link or button (except the on/off switches, which have their own sound) */
+        document.addEventListener('click', function (e) {
+          var el = e.target.closest ? e.target.closest('a, button') : null;
+          if (el && !el.classList.contains('switch')) sfx.click();
+        });
+
+        applySettings();
 
         /* 0b. Menu panel: one button, on every screen size, opens nav links + the theme switch */
         var navToggle = document.getElementById('navToggle');
@@ -472,11 +688,16 @@
           var closeMenu = function () {
             document.documentElement.classList.remove('nav-open');
             navToggle.setAttribute('aria-expanded', 'false');
+            navPanel.setAttribute('inert', '');
+          };
+          var openMenu = function () {
+            document.documentElement.classList.add('nav-open');
+            navToggle.setAttribute('aria-expanded', 'true');
+            navPanel.removeAttribute('inert');
           };
           navToggle.addEventListener('click', function (e) {
             e.stopPropagation();
-            var isOpen = document.documentElement.classList.toggle('nav-open');
-            navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            if (document.documentElement.classList.contains('nav-open')) closeMenu(); else openMenu();
           });
           if (mainNav) {
             mainNav.querySelectorAll('a').forEach(function (link) {
@@ -566,7 +787,7 @@
           term.classList.add('is-live');
         };
 
-        if (term && !reduceMotion) {
+        if (term && !noMotion()) {
           var typed = term.querySelector('.typed');
           var outputLines = term.querySelectorAll('.out');
           var command = typed.textContent.trim();
@@ -608,7 +829,7 @@
 
           var goToSection = function (id) {
             var section = document.getElementById(id);
-            if (section) section.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+            if (section) section.scrollIntoView({ behavior: noMotion() ? 'auto' : 'smooth', block: 'start' });
           };
 
           var printLine = function (text, cls) {
@@ -681,6 +902,7 @@
 
           terminalInput.addEventListener('keydown', function (e) {
             if (e.key === 'Enter') {
+              sfx.enter();
               var value = terminalInput.value;
               if (value.trim() !== '') {
                 history.push(value);
@@ -689,6 +911,8 @@
               runCommand(value);
               terminalInput.value = '';
               liveEcho.textContent = '';
+            } else if (e.key.length === 1 || e.key === 'Backspace') {
+              sfx.key();
             } else if (e.key === 'ArrowUp') {
               e.preventDefault();
               if (historyPos > 0) {
@@ -718,11 +942,12 @@
 
         /* 1b. Role rotator: cycles through a few titles under the name */
         var roleEl = document.getElementById('roleText');
-        if (roleEl && !reduceMotion) {
+        if (roleEl) {
           var roles = ['IT Support Specialist', 'Software Developer', 'Problem Solver'];
           var roleIndex = 0;
 
           var cycleRole = function () {
+            if (noMotion()) return;
             roleEl.classList.add('is-fading');
             setTimeout(function () {
               roleIndex = (roleIndex + 1) % roles.length;
@@ -734,7 +959,7 @@
         }
 
         /* 2. Sections fade in as you scroll to them */
-        if ('IntersectionObserver' in window && !reduceMotion) {
+        if ('IntersectionObserver' in window && !noMotion()) {
           var revealObserver = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
               if (entry.isIntersecting) {
