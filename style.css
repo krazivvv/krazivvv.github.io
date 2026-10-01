@@ -320,27 +320,30 @@ p {
   gap: 0.6rem;
 }
 
-/* Temporary logo mark — swap for a real image later by replacing this with an <img> */
-.logo-badge {
-  display: inline-flex;
+.brand {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  width: 2.3rem;
-  height: 2.3rem;
-  flex-shrink: 0;
-  border-radius: var(--radius-sm);
-  background: var(--accent);
-  color: var(--bg);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.75rem;
-  letter-spacing: 0.02em;
-  text-decoration: none;
+  gap: 0.6rem;
+}
+
+.logo-mark {
+  display: inline-flex;
   transition: transform 0.2s ease;
 }
 
-.logo-badge:hover {
+.logo-mark:hover {
   transform: translateY(-1px);
+}
+
+.logo-mark img {
+  display: block;
+  height: 1.7rem;
+  width: auto;
+}
+
+/* The logo is a white mark on transparent; flipping it dark keeps it visible on the light theme */
+html[data-theme="light"] .logo-mark img {
+  filter: invert(1);
 }
 
 .site-header nav {
